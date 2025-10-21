@@ -1,61 +1,71 @@
-package ru.realmweavers.polinationsadapter
+package ru.realmweavers.polinationsadapter.service
 
-import org.junit.jupiter.api.BeforeEach
+import io.mockk.*
+import io.mockk.impl.annotations.MockK
+import io.mockk.junit5.MockKExtension
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.bodyToMono
+import reactor.core.publisher.Mono
 import ru.realmweavers.polinationsadapter.config.PolinationsAdapterProperties
-import ru.realmweavers.polinationsadapter.service.PolinationsAdapterService
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
-/**
- * Unit tests for PolinationsAdapterService
- *
- */
-
+@OptIn(ExperimentalCoroutinesApi::class)
+@ExtendWith(MockKExtension::class)
 class PolinationsAdapterServiceTest {
 
-    private lateinit var service: PolinationsAdapterService
-    private lateinit var properties: PolinationsAdapterProperties
+    @MockK
+    private lateinit var webClient: WebClient
+
+    @MockK
+    private lateinit var requestHeadersUriSpec: WebClient.RequestHeadersUriSpec<*>
+
+    @MockK
+    private lateinit var requestHeadersSpec: WebClient.RequestHeadersSpec<*>
+
+    @MockK
+    private lateinit var responseSpec: WebClient.ResponseSpec
+
+    private lateinit var polinationsAdapterService: PolinationsAdapterService
 
     @BeforeEach
     fun setUp() {
-        properties = PolinationsAdapterProperties(
-            enabled = true,
-            apiKey = "asdKey176ASd",
-            baseUrl = "http://test.some.shit.com",
-            timeout = 5000,
-            maxRetries = 3,
-            retryDelay = 1000
-        )
-        service = PolinationsAdapterService(properties)
-    }
+        val properties = PolinationsAdapterProperties().apply {
+            baseUrl = "https://text.pollinations.ai/"
+            apiKey = "asdsadasdad"
+            timeout = 5000
+            enabled = true
+        }
 
-    /**
-     *
-     */
-    @Test
-    fun `should process requests when Polinations Adapter is enabled`() {
-        //Arrange
-        val request = "test request"
-
-        //Act
-        val result = service.makeRequest(request)
-
-        //Assert
-        assertTrue(result.contains(request))
+        polinationsAdapterService = PolinationsAdapterService(properties, webClient)
     }
 
     @Test
-    fun `should return disabled message when disabled`() {
-        //Arrange
-        properties = PolinationsAdapterProperties(enabled = false)
-        service = PolinationsAdapterService(properties)
+    fun `should return success message when GET request done with no errors`() = runTest {
+        // Arrange
+        val expectedResponse = """{"models": ["gpt-4"]}"""
 
-        //Act
-        val result = service.makeRequest("test request")
+        // MockK мокирование - более читаемый синтаксис
+        every { webClient.get() } returns requestHeadersUriSpec
+        every { requestHeadersUriSpec.uri("/models") } returns requestHeadersSpec
+        every { requestHeadersSpec.retrieve() } returns responseSpec
+        every { responseSpec.bodyToMono<String>() } returns Mono.just(expectedResponse)
 
-        //Assert
-        assertEquals("Polinations Apdapter disabled", result)
+        // Act
+        //TODO hardcode for uri - fix that shit
+        val result = polinationsAdapterService.httpGetPolinationsRequest("/models")
+
+        // Assert
+        assertEquals(expectedResponse, result)
+
+        // Проверка вызовов
+        verify { webClient.get() }
+        verify { requestHeadersUriSpec.uri("/models") }
+        verify { requestHeadersSpec.retrieve() }
+        verify { responseSpec.bodyToMono<String>() }
     }
-
 }

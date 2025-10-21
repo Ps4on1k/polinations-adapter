@@ -23,37 +23,37 @@ data class PolinationsAdapterProperties(
     /**
      * Check for library ON
      */
-    val enabled: Boolean = true,
+    var enabled: Boolean = true,
 
     /**
      * Polinations API key for HTTP requests
      */
-    val apiKey: String? = null,
+    var apiKey: String? = null,
 
     /**
      *  HTTP timeout, ms
      */
     @field:Min(15, message = "HTTP timeout must be at leas 15ms")
-    val  timeout: Long = 35000,
+    var  timeout: Long = 35000,
 
     /**
      *  HTTP retry, count
      */
     @field:Min(0, message = "Retries cannot be negative")
-    val  maxRetries: Int = 3,
+    var  maxRetries: Int = 3,
 
     /**
      *  HTTP retry, delay ms
      */
     @field:Min(0, message = "Retry delay cannot be negative")
-    val  retryDelay: Int = 3000,
+    var  retryDelay: Int = 3000,
 
 
 
     /**
      * Base Polinations API URL
      */
-    val baseUrl: String = "https://text.pollinations.ai/",
+    var baseUrl: String = "https://text.pollinations.ai/",
 )
 {
     /**

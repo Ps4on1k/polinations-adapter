@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.web.reactive.function.client.WebClient
 import ru.realmweavers.polinationsadapter.service.PolinationsAdapterService
 
 /**
@@ -32,12 +33,12 @@ class PolinationsAdapterAutoConfiguration {
         havingValue = "true",
         matchIfMissing = true
     )
-    fun polinationsAdapterService(properties: PolinationsAdapterProperties): PolinationsAdapterService {
+    fun polinationsAdapterService(properties: PolinationsAdapterProperties, webClient: WebClient): PolinationsAdapterService {
         logger.info("Auto-configuring PolinationsAdapter with properties: {}", properties)
         if (!properties.isValid()) {
             logger.error("PolinationsAdapter is enabled but not  properly configured. Please set up polinations.adapter in application.yml")
         }
-        return PolinationsAdapterService(properties)
+        return PolinationsAdapterService(properties, webClient)
     }
 
     /**
