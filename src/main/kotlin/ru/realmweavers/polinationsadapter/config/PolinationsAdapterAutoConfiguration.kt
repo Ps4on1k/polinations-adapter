@@ -42,6 +42,16 @@ class PolinationsAdapterAutoConfiguration {
     }
 
     /**
+     * WEB client bean
+     */
+
+    @Bean
+    @ConditionalOnMissingBean
+    fun webClient(): WebClient {
+        return WebClient.builder().build()
+    }
+
+    /**
      * Utility Bean
      */
 

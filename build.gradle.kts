@@ -7,12 +7,11 @@ plugins {
 
 
 group = "ru.realm-weavers"
-version = "0.0.1"
+version = "0.0.4"
 
 repositories {
     mavenCentral()
 }
-
 
 dependencies {
     // Kotlin
@@ -45,6 +44,28 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
 }
 
+publishing {
+    publications {
+        create<MavenPublication>("package-publisher") {
+            groupId = "ru.realm-weavers"
+            artifactId = "polinations-adapter"
+            version = "0.0.4"
+            // Укажите путь к вашему артефакту здесь
+            artifact("${layout.buildDirectory.get()}/libs/${artifactId}-${version}.jar")
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/Ps4on1k/polinations-adapter")
+            credentials {
+                username = project.findProperty("gpr.user").toString()
+                password = project.findProperty("gpr.token").toString()
+            }
+        }
+    }
+}
+
 kotlin {
     jvmToolchain(17)
 }
@@ -59,6 +80,3 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         jvmTarget = "17"
     }
 }
-
-
-// Publish config

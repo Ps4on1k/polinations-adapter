@@ -9,10 +9,13 @@ local.properties
 .env
 .env.local
 
+
 ### Gradle ###
 .gradle
 **/build/
 !src/**/build/
+
+gradle.properties
 
 # Ignore Gradle GUI config
 gradle-app.setting
