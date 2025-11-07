@@ -24,7 +24,7 @@ data class aiRequestDataModel(
         private var private: Boolean? = true
         private var referrer: String? = ""
 
-        fun model(aiModel: String) = apply { this.model = model }
+        fun model(aiModel: String) = apply { this.model = aiModel }
         fun prompt(prompt: String) = apply { this.prompt = prompt }
         fun systemPrompt(systemPrompt: String?) = apply { this.systemPrompt = systemPrompt }
         fun seed(seed: Int?) = apply { this.seed = seed }

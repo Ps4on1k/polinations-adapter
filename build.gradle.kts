@@ -7,7 +7,7 @@ plugins {
 
 
 group = "ru.realm-weavers"
-version = "0.0.4"
+version = "0.0.8"
 
 repositories {
     mavenCentral()
@@ -49,8 +49,8 @@ publishing {
         create<MavenPublication>("package-publisher") {
             groupId = "ru.realm-weavers"
             artifactId = "polinations-adapter"
-            version = "0.0.4"
-            // Укажите путь к вашему артефакту здесь
+            version = "0.0.8"
+
             artifact("${layout.buildDirectory.get()}/libs/${artifactId}-${version}.jar")
         }
     }
